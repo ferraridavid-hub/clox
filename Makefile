@@ -1,19 +1,20 @@
 CC = gcc
 
-CFLAGS = -std=c99 -Wall -Werror
+CFLAGS = -std=c99 -Wall -Werror -MMD -MP
 
 MAIN = main
 
-HDRS = ./chunk.h ./memory.h ./debug.h ./value.h
-
-SRCS = $(HDRS:.h=.c) main.c
-
+SRCS = chunk.c memory.c debug.c value.c main.c
 OBJS = $(SRCS:.c=.o)
+DEPS = $(OBJS:.o=.d)
 
-$(MAIN): $(OBJS) Makefile
-	$(CC) $(CFLAGS) -o $@ $(OBJS)
+$(MAIN): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
 
-$(OBJS): $(HDRS) Makefile
+-include $(DEPS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(MAIN) *.o ./*.o
+	rm -f $(MAIN) $(OBJS) $(DEPS)
