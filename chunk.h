@@ -5,6 +5,7 @@
 #include "value.h"
 
 typedef enum {
+    OP_CONSTANT,
     OP_RETURN,
 } OpCode;
 
@@ -18,6 +19,8 @@ typedef struct {
 void initChunk(Chunk* chunk);
 void writeChunk(Chunk* chunk, uint8_t byte);
 void freeChunk(Chunk* chunk);
+
+// return the index of the value inside chunk.constants pool
 size_t addConstant(Chunk* chunk, Value value);
 
 #endif
