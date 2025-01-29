@@ -2,7 +2,7 @@
 #define clox_chunk_h
 
 #include "common.h"
-#inlcude "value.h"
+#include "value.h"
 
 typedef enum {
     OP_RETURN,
@@ -18,5 +18,6 @@ typedef struct {
 void initChunk(Chunk* chunk);
 void writeChunk(Chunk* chunk, uint8_t byte);
 void freeChunk(Chunk* chunk);
+size_t addConstant(Chunk* chunk, Value value);
 
 #endif
