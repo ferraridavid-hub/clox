@@ -29,10 +29,10 @@ size_t constantInstruction(const char* name, Chunk* chunk, size_t offset) {
 size_t disassembleInstruction(Chunk* chunk, size_t offset) {
     printf("%04zu ", offset);
     if (offset > 0 && 
-            chunk->lines[offset] == chunk->lines[offset - 1]) {
+            getLine(chunk, offset) == getLine(chunk, offset - 1)) {
         printf("   | ");
     } else {
-        printf("%4d ", chunk->lines[offset]);
+        printf("%4d ", chunk->lineEncoding.lines[offset].line);
     }
 
     uint8_t instruction = chunk->code[offset];

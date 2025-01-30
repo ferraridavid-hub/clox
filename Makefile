@@ -4,7 +4,7 @@ CFLAGS = -std=c99 -Wall -Werror -MMD -MP
 
 MAIN = main
 
-SRCS = chunk.c memory.c debug.c value.c main.c
+SRCS = line_encoding.c chunk.c memory.c debug.c value.c main.c
 OBJS = $(SRCS:.c=.o)
 DEPS = $(OBJS:.o=.d)
 

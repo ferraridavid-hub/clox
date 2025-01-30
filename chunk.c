@@ -5,7 +5,7 @@ void initChunk(Chunk* chunk) {
     chunk->count = 0;
     chunk->capacity = 0;
     chunk->code = NULL;
-    chunk->lines = NULL;
+    initLineEncoding(&chunk->lineEncoding);
     initValueArray(&chunk->constants);
 }
 
@@ -16,18 +16,17 @@ void writeChunk(Chunk* chunk, uint8_t byte, int line) {
         chunk->capacity = GROW_CAPACITY(oldCapacity);
         chunk->code = GROW_ARRAY(uint8_t, chunk->code,
                 oldCapacity, chunk->capacity);
-        chunk->lines = GROW_ARRAY(int, chunk->lines,
-                oldCapacity, chunk->capacity);
     } 
+
+    writeLineEncoding(&chunk->lineEncoding, line, chunk->count);
     chunk->code[chunk->count] = byte;
-    chunk->lines[chunk->count] = line;
     chunk->count++;
 }
 
 
 void freeChunk(Chunk* chunk) {
     FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
-    FREE_ARRAY(int, chunk->lines, chunk->capacity);
+    freeLineEncoding(&chunk->lineEncoding);
     initChunk(chunk);
     freeValueArray(&chunk->constants);
 }
@@ -36,4 +35,14 @@ void freeChunk(Chunk* chunk) {
 size_t addConstant(Chunk* chunk, Value value) {
     writeValueArray(&chunk->constants, value);
     return chunk->constants.count - 1;
+}
+
+
+int getLine(Chunk* chunk, int instruction) {
+    for (size_t i = 0; i < chunk->lineEncoding.count; i++) {
+        if (instruction < chunk->lineEncoding.lines[i].offset) {
+            return chunk->lineEncoding.lines[i - 1].line;
+        }
+    }
+    return -1;
 }
